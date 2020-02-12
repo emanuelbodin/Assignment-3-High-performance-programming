@@ -114,5 +114,6 @@ int main(int argc, const char* argv[]) {
     update_maxdiff(vel_dx, vel_dy, &vel_maxdiff);
   }
   printf("pos_maxdiff = %16.12f\n", pos_maxdiff);
+  printf("vel_maxdiff = %16.12f\n", vel_maxdiff);
   return 0;
 }
