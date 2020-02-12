@@ -6,13 +6,23 @@
 
 typedef struct _particle
 {
-    double posX;
-    double posY;
-    double mass;
-    double velX;
-    double velY;
-    double b;
+  double posX;
+  double posY;
+  double mass;
+  double velX;
+  double velY;
+  double b;
 }particle;
+
+const float circleRadius=0.025, circleColor=0;
+const int windowWidth=800;
+
+void keep_within_box(double* xA, double* yA) {
+  if(*xA > 1)
+    *xA = 0;
+  if(*yA > 1)
+    *yA = 0;
+}
 
 int main(int argc, char* argv[]){
   //printf("%d", argc);
@@ -38,7 +48,11 @@ int main(int argc, char* argv[]){
     const double G = 100 / N;
     double delta_t = pow(10, deltaT);
     //const int n_steps = 200;
-
+  printf("\n %d",123);
+    // graphics
+    float L=1, W=1;
+    InitializeGraphics(argv[0],windowWidth,windowWidth);
+    SetCAxes(0,1);
     if (fp == NULL){
         printf("Error while opening the file.\n");
         return 1;
@@ -64,8 +78,15 @@ int main(int argc, char* argv[]){
         printf("Read struct %f, %f, %f, %f, %f. %f \n", array[i].posX, array[i].posY, array[i].mass, array[i].velX, array[i].velY, array[i].b);
     }*/
     particle *new_array = malloc(N * sizeof(particle));
+    printf("\n %d",123);
     for (int k = 0; k < n_steps; k++) {
+      ClearScreen();
       for (int i = 0; i < N; i++) {
+        keep_within_box(&array[i].posX, &array[i].posY);
+        DrawCircle(array[i].posX, array[i].posY, L, W, circleRadius, circleColor);
+        Refresh();
+        printf("\n %d",i);
+        usleep(3000);
         double Fix = 0;
         double Fiy = 0;
         double aix, aiy;
@@ -73,7 +94,7 @@ int main(int argc, char* argv[]){
         double pix, piy;
         double massi = array[i].mass;
         for (int j = 0;  j < N; j++) {
-          double Fjx, Fjy;
+          double Fjx = 0, Fjy = 0;
           if (j == i) {} /* skip iteration */
           else {
             double x_dist = array[i].posX - array[j].posX;
@@ -116,7 +137,6 @@ int main(int argc, char* argv[]){
 
     FILE *fp2;
     fp2 = fopen("test.gal", "wb");
-    char buff[sizeof(double)];
     for(int i = 0; i<N; i++){
       fwrite(&new_array[i].posX, sizeof(double), 1, fp2);
       fwrite(&new_array[i].posY, sizeof(double), 1, fp2);
@@ -125,4 +145,10 @@ int main(int argc, char* argv[]){
       fwrite(&new_array[i].velY, sizeof(double), 1, fp2);
       fwrite(&new_array[i].b, sizeof(double), 1, fp2);
     }
+
+
+  FlushDisplay();
+  CloseDisplay();
+
+  return 0;
 }

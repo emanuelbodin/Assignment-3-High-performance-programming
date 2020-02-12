@@ -7,7 +7,7 @@
  *
  */
 
-#include "graphics.h"
+#include "../graphics/graphics.h"
 #include <math.h>
 
 const float circleRadius=0.025, circleColor=0;
