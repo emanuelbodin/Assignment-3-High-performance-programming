@@ -95,9 +95,9 @@ int main(int argc, char* argv[]){
             double massj = array[j].mass;
             Fjx = massj * x_dist / denom; 
             Fjy = massj * y_dist / denom;
+            Fix += Fjx;
+            Fiy += Fjy;
           }
-          Fix += Fjx;
-          Fiy += Fjy;
         }
         Fix = -G * massi * Fix;
         Fiy = -G * massi * Fiy;
@@ -122,7 +122,11 @@ int main(int argc, char* argv[]){
           usleep(1000);
         }
       }
-      array = new_array;
+      
+      for(int i = 0; i<N; i++){
+        array[i] = new_array[i];
+      }
+      
       if (graphics) {
         ClearScreen();
       }
@@ -139,6 +143,8 @@ int main(int argc, char* argv[]){
     }
 
     fclose(fp2);
+    free(array);
+    free(new_array);
 
   if (graphics) {
     FlushDisplay();
