@@ -24,8 +24,10 @@ void keep_within_box(double* xA, double* yA) {
     *yA = 0;
 }
 
+// ./galsim 2 input_data/circles_N_2.gal 100 -5 1
+// ./compare_gal_files 3000 ../result.gal ../ref_output_data/ellipse_N_03000_after100steps.gal
+
 int main(int argc, char* argv[]){
-  //printf("%d", argc);
   if (argc != 6){
       printf("Wrong number of input arguments\n");
       return 1;
@@ -33,30 +35,25 @@ int main(int argc, char* argv[]){
   int N = atoi(argv[1]);
   char* filename = argv[2];
   int n_steps = atoi(argv[3]);
-  int deltaT = atof(argv[4]);
+  int deltaT = atoi(argv[4]);
   int graphics = atoi(argv[5]);
 
   printf("Command line arguments given: %d, %s, %d, %d, %d \n", N, filename, n_steps, deltaT, graphics);
-//input_data/sun_and_planets_N_3.gal
-    FILE *fp;
-    // ./galsim 2 input_data/circles_N_2.gal 100 -5 1
-    //int N = 10;
-    //char* filename = "input_data/ellipse_N_00010.gal";
-    //char* filename = "test.gal";
-    fp = fopen(filename, "rb");
+    FILE *fp1, *fp2;
+    fp1 = fopen(filename, "rb");
     const float e0 = 0.001;
     const double G = 100 / N;
     double delta_t = pow(10, deltaT);
-    //const int n_steps = 200;
-    // graphics
+
     float L=1, W=1;
     if (graphics) {
       InitializeGraphics(argv[0],windowWidth,windowWidth);
       SetCAxes(0,1);
-      if (fp == NULL){
-          printf("Error while opening the file.\n");
-          return 1;
-      }
+    }
+
+    if (fp1 == NULL){
+    printf("Error while opening the file.\n");
+    return 1;
     }
     
     unsigned char buffer[8];
@@ -64,10 +61,10 @@ int main(int argc, char* argv[]){
     particle *array = malloc(N * sizeof(particle));
     for(int i = 0; i<N; i++){
 
-        for(int j = 0; j<6; j++){
-            fread(buffer, sizeof(buffer), 1, fp);
-            arr[j] = *((double*)buffer);
-        }
+      for(int j = 0; j<6; j++){
+          fread(buffer, sizeof(buffer), 1, fp1);
+          arr[j] = *((double*)buffer);
+      }
         array[i].posX = arr[0];
         array[i].posY = arr[1];
         array[i].mass = arr[2];
@@ -75,10 +72,9 @@ int main(int argc, char* argv[]){
         array[i].velY = arr[4];
         array[i].b = arr[5];
     }
-    /*
-    for(int i = 0; i<N; i++){
-        printf("Read struct %f, %f, %f, %f, %f. %f \n", array[i].posX, array[i].posY, array[i].mass, array[i].velX, array[i].velY, array[i].b);
-    }*/
+
+    fclose(fp1);
+
     particle *new_array = malloc(N * sizeof(particle));
     for (int k = 0; k < n_steps; k++) {
       for (int i = 0; i < N; i++) {
@@ -118,7 +114,7 @@ int main(int argc, char* argv[]){
         new_array[i].posY = piy;
         new_array[i].mass = array[i].mass;
         new_array[i].b = array[i].b;
-
+        
         if (graphics) {
           keep_within_box(&array[i].posX, &array[i].posY);
           DrawCircle(array[i].posX, array[i].posY, L, W, circleRadius, circleColor);
@@ -131,17 +127,8 @@ int main(int argc, char* argv[]){
         ClearScreen();
       }
     }
-    
-  
-    printf("\n");
-    /*
-    for(int i = 0; i<N; i++){
-        printf("Read struct %f, %f, %f, %f, %f. %f \n", new_array[i].posX, new_array[i].posY, new_array[i].mass, new_array[i].velX, new_array[i].velY, new_array[i].b);
-    }
-    */
 
-    FILE *fp2;
-    fp2 = fopen("test.gal", "wb");
+    fp2 = fopen("result.gal", "wb");
     for(int i = 0; i<N; i++){
       fwrite(&new_array[i].posX, sizeof(double), 1, fp2);
       fwrite(&new_array[i].posY, sizeof(double), 1, fp2);
@@ -151,9 +138,13 @@ int main(int argc, char* argv[]){
       fwrite(&new_array[i].b, sizeof(double), 1, fp2);
     }
 
+    fclose(fp2);
 
-  FlushDisplay();
-  CloseDisplay();
+  if (graphics) {
+    FlushDisplay();
+    CloseDisplay();
+  }
+  
 
   return 0;
 }
