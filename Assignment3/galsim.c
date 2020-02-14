@@ -62,12 +62,12 @@ int main(int argc, char* argv[]){
     FILE *fp1, *fp2;
     fp1 = fopen(filename, "rb");
     const float e0 = 0.001;
-    const double G = 100 / N;
+    const double G = 100.0 / N;
     double delta_t = pow(10, deltaT);
 
-    float L=1, W=1;
     /*
     if (graphics) {
+      float L=1, W=1;
       InitializeGraphics(argv[0],windowWidth,windowWidth);
       SetCAxes(0,1);
     }*/
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]){
       }
       */
     }
-
+  
     fp2 = fopen("result.gal", "wb");
     for(int i = 0; i<N; i++){
       fwrite(&new_array[i].posX, sizeof(double), 1, fp2);
