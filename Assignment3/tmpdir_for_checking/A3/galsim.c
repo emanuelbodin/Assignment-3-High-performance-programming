@@ -55,14 +55,15 @@ int main(int argc, char* argv[]){
   int N = atoi(argv[1]);
   char* filename = argv[2];
   int n_steps = atoi(argv[3]);
-  double delta_t = atof(argv[4]);
+  int deltaT = atoi(argv[4]);
   int graphics = atoi(argv[5]);
 
-  printf("Command line arguments given: %d, %s, %d, %f, %d \n", N, filename, n_steps, delta_t, graphics);
+  printf("Command line arguments given: %d, %s, %d, %d, %d \n", N, filename, n_steps, deltaT, graphics);
     FILE *fp1, *fp2;
     fp1 = fopen(filename, "rb");
     const float e0 = 0.001;
     const double G = 100.0 / N;
+    double delta_t = pow(10, deltaT);
 
     /*
     if (graphics) {

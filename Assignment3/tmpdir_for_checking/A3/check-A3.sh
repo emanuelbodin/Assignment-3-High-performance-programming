@@ -68,8 +68,6 @@ echo Checking that result.gal file was created
 ls -l result.gal || exit 1
 
 echo Compiling compare_gal_files program
-pwd
-ls
 gcc -o compare_gal_files ../../compare_gal_files/compare_gal_files.c -lm || exit 1
 ls -l compare_gal_files || exit 1
 
