@@ -30,11 +30,7 @@ particle * read_particle(int N, FILE *fp1) {
   particle *array = malloc(N * sizeof(particle));
   for(int i = 0; i<N; i++){
     for(int j = 0; j<6; j++){
-        int readOk = fread(buffer, sizeof(buffer), 1, fp1);
-        if(!readOk){
-          printf("Problem reading file");
-          return array;
-        }
+        fread(buffer, sizeof(buffer), 1, fp1);
         arr[j] = *((double*)buffer);
     }
     array[i].posX = arr[0];
@@ -59,14 +55,15 @@ int main(int argc, char* argv[]){
   int N = atoi(argv[1]);
   char* filename = argv[2];
   int n_steps = atoi(argv[3]);
-  double delta_t = atof(argv[4]);
+  int deltaT = atoi(argv[4]);
   int graphics = atoi(argv[5]);
 
-  printf("Command line arguments given: %d, %s, %d, %f, %d \n", N, filename, n_steps, delta_t, graphics);
+  printf("Command line arguments given: %d, %s, %d, %d, %d \n", N, filename, n_steps, deltaT, graphics);
     FILE *fp1, *fp2;
     fp1 = fopen(filename, "rb");
-    double e0 = 0.001;
-    double G = 100.0 / N;
+    const float e0 = 0.001;
+    const double G = 100.0 / N;
+    double delta_t = pow(10, deltaT);
 
     /*
     if (graphics) {
@@ -96,8 +93,8 @@ int main(int argc, char* argv[]){
           else {
             double x_dist = array[i].posX - array[j].posX;
             double y_dist = array[i].posY - array[j].posY;
-            double r = sqrt(pow(x_dist, 2) + pow(y_dist, 2));
-            double denom = pow((r+e0), 3);
+            double r2 = pow(x_dist, 2) + pow(y_dist, 2);
+            double denom = pow((sqrt(r2)+e0), 3);
             double massj = array[j].mass;
             Fjx = massj * x_dist / denom; 
             Fjy = massj * y_dist / denom;

@@ -1,4 +1,4 @@
-CFLAGS= -g -pg -Wall -lm -Ofast
+CFLAGS= -Ofast -g -pg -Wall
 INCLUDES=-I/opt/X11/include
 LDFLAGS=-L/opt/X11/lib -lX11 -lm
 

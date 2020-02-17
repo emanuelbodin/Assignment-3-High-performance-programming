@@ -65,8 +65,8 @@ int main(int argc, char* argv[]){
   printf("Command line arguments given: %d, %s, %d, %f, %d \n", N, filename, n_steps, delta_t, graphics);
     FILE *fp1, *fp2;
     fp1 = fopen(filename, "rb");
-    double e0 = 0.001;
-    double G = 100.0 / N;
+    const float e0 = 0.001;
+    const double G = 100.0 / N;
 
     /*
     if (graphics) {
@@ -96,8 +96,8 @@ int main(int argc, char* argv[]){
           else {
             double x_dist = array[i].posX - array[j].posX;
             double y_dist = array[i].posY - array[j].posY;
-            double r = sqrt(pow(x_dist, 2) + pow(y_dist, 2));
-            double denom = pow((r+e0), 3);
+            double r2 = pow(x_dist, 2) + pow(y_dist, 2);
+            double denom = pow((sqrt(r2)+e0), 3);
             double massj = array[j].mass;
             Fjx = massj * x_dist / denom; 
             Fjy = massj * y_dist / denom;
