@@ -1,1 +1,2 @@
-hej
+2.652
+2,3 GHz Dual-Core Intel Core i5
